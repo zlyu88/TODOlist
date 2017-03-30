@@ -1,5 +1,3 @@
-import wsgi
-
 from wsgiref.simple_server import make_server
 from paste.evalexception.middleware import EvalException
 from paste.session import SessionMiddleware
@@ -27,6 +25,3 @@ app = SessionMiddleware(app)
 httpd = make_server('localhost', 8888, app)
 httpd.serve_forever()
 app = EvalException(app)
-
-if __name__ == '__main__':
-    wsgi.run_with_cgi(app)
