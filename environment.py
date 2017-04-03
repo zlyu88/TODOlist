@@ -23,12 +23,12 @@ class App:
     def __iter__(self):
 
         self.views_mapping = {
-            '/': views.counter(self.session),
-            '/hello': views.hello(),
-            '/goodbye': views.goodbye()
+            '/': views.counter,
+            '/hello': views.hello,
+            '/goodbye': views.goodbye
         }
 
-        response = self.views_mapping.get(self.environ['PATH_INFO'], views.errors())
+        response = self.views_mapping.get(self.environ['PATH_INFO'], views.errors)(self.session)
         yield self.get_response(response)
 
     def get_response(self, response):

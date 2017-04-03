@@ -7,16 +7,16 @@ def counter(session):
     return Response('Counter: %d\n' % count)
 
 
-def hello():
+def hello(session):
     message = 'Hello World!\n'
     return Response(message)
 
 
-def goodbye():
+def goodbye(session):
     message = 'Goodbye World!\n'
     return Response(message)
 
 
-def errors():
+def errors(session):
     message = '404 Not Found\n'
     return Response(message, '404 Not Found')
