@@ -1,27 +1,42 @@
-from wsgiref.simple_server import make_server
-from paste.evalexception.middleware import EvalException
+from os import environ
+
 from paste.session import SessionMiddleware
+from wsgiref.simple_server import make_server
+
+import views
 
 
-def app(environ, start_response):
-    # Except error
-    if 'error' in environ['PATH_INFO'].lower():
-        raise Exception('Detect "error" in URL path')
+class Response(object):
+    def __init__(self, content='', status_code='200 OK', headers=(('Content-type', 'text/html'), )):
+        self.status_code = status_code
+        self.headers = list(headers)
+        self.content = content.encode('utf-8')
 
-    # Session
+
+class App:
     session = environ.get('paste.session.factory', lambda: {})()
-    if 'count' in session:
-        count = session['count']
-    else:
-        count = 1
-    session['count'] = count + 1
 
-    # Generate response
-    start_response('200 OK', [('Content-Type', 'text/plain')])
-    message = 'Hello World!\nYou have been here %d times!\n' % count
-    return [message.encode("utf-8"), ]
+    def __init__(self, environ, start_response):
+        self.environ = environ
+        self.start = start_response
 
-app = SessionMiddleware(app)
-httpd = make_server('localhost', 8888, app)
-httpd.serve_forever()
-app = EvalException(app)
+    def __iter__(self):
+
+        self.views_mapping = {
+            '/': views.counter(self.session),
+            '/hello': views.hello(),
+            '/goodbye': views.goodbye()
+        }
+
+        response = self.views_mapping.get(self.environ['PATH_INFO'], views.errors())
+        yield self.get_response(response)
+
+    def get_response(self, response):
+        self.start(response.status_code, response.headers)
+        return response.content
+
+app = SessionMiddleware(App)
+if __name__ == '__main__':
+    httpd = make_server('localhost', 8000, app)
+    print("Serving HTTP on port 8000...")
+    httpd.serve_forever()
