@@ -9,7 +9,7 @@ import views
 
 
 class Template:
-    def __init__(self, file, content):
+    def __init__(self, file, content=None):
         self.file = file
         self.content = content
 
