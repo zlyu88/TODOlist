@@ -1,10 +1,13 @@
 from environment import Response
+from environment import Template
 
 
 def counter(session):
     count = session['count'] if 'count' in session else 1
     session['count'] = count + 1
-    return Response('Counter: %d\n' % count)
+    template = Template('/templates/counter.html', {'count': count})
+    message = template.get_message()
+    return Response(message)
 
 
 def hello(session):
@@ -20,3 +23,9 @@ def goodbye(session):
 def errors(session):
     message = '404 Not Found\n'
     return Response(message, '404 Not Found')
+
+
+def contact(session):
+    template = Template('/templates/contact.html', {'name': 'Vasia13'})
+    message = template.get_message()
+    return Response(message)

@@ -1,9 +1,23 @@
+import os
 from os import environ
 
+from jinja2 import Environment, FileSystemLoader
 from paste.session import SessionMiddleware
 from wsgiref.simple_server import make_server
 
 import views
+
+
+class Template:
+    def __init__(self, file, content):
+        self.file = file
+        self.content = content
+
+    def get_message(self):
+        template_loader = FileSystemLoader(searchpath=os.path.dirname(__file__))
+        jinja_env = Environment(loader=template_loader)
+        template = jinja_env.get_template(self.file)
+        return template.render(self.content)
 
 
 class Response(object):
@@ -25,7 +39,8 @@ class App:
         self.views_mapping = {
             '/': views.counter,
             '/hello': views.hello,
-            '/goodbye': views.goodbye
+            '/goodbye': views.goodbye,
+            '/contact': views.contact
         }
 
         response = self.views_mapping.get(self.environ['PATH_INFO'], views.errors)(self.session)
