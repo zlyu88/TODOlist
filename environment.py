@@ -1,7 +1,7 @@
 import os
 import re
-from os import environ
 
+from jinja2 import DictLoader
 from jinja2 import Environment, FileSystemLoader
 from paste.session import SessionMiddleware
 from wsgiref.simple_server import make_server
@@ -10,20 +10,23 @@ import views
 
 
 class Template:
-    def __init__(self, file, content=None):
-        self.file = file
+    def __init__(self, page, content=None):
+        self.page = page
         self.content = content
 
     def get_message(self):
         template_loader = FileSystemLoader(searchpath=os.path.dirname(__file__))
-        jinja_env = Environment(loader=template_loader)
-        template = jinja_env.get_template(self.file)
-        body = template.render(self.content)
+        env = Environment(loader=template_loader)
+        pages = ('templates/base.html', self.page)
+        templates = dict((name, open(name, 'r').read()) for name in pages)
+        env.loader = DictLoader(templates)
+        body = env.get_template(self.page)
+        result = body.render(self.content)
         css = ''.join(('<style>\n', open('static/style.css', 'r').read(), '</style>'))
-        body = re.sub("(<link[^>]+>)", css, body)
+        result = re.sub("(<link[^>]+>)", css, result)
         js = ''.join(('<script>\n', open('static/js.js', 'r').read(), '</script>'))
-        body = re.sub("(<script[^>]+>)", js, body)
-        return body
+        result = re.sub("(<script[^>]+>)", js, result)
+        return result
 
 
 class Response(object):
@@ -34,7 +37,7 @@ class Response(object):
 
 
 class App:
-    session = environ.get('paste.session.factory', lambda: {})()
+    session = os.environ.get('paste.session.factory', lambda: {})()
 
     def __init__(self, environ, start_response):
         self.environ = environ

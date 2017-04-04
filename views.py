@@ -5,13 +5,14 @@ from environment import Template
 def counter(session):
     count = session['count'] if 'count' in session else 1
     session['count'] = count + 1
-    template = Template('/templates/counter.html', {'count': count})
+    template = Template('templates/counter.html', {'count': count})
     message = template.get_message()
     return Response(message)
 
 
 def hello(session):
-    message = 'Hello World!\n'
+    template = Template('templates/hello.html', {'name': 'Oleg'})
+    message = template.get_message()
     return Response(message)
 
 
@@ -26,6 +27,6 @@ def errors(session):
 
 
 def contact(session):
-    template = Template('/templates/contact.html', {'name': 'Vasia13'})
+    template = Template('templates/contact.html', {'name': 'Vasia13'})
     message = template.get_message()
     return Response(message)

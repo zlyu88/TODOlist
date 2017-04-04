@@ -1,20 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" type="text/css" href="../static/style.css"/>
-</head>
-<body>
+{% extends "templates/base.html" %}
+
+{% block title %}visit counter{% endblock %}
+
+{% block main_content %}
     <h1>Counter: {{ count }}</h1>
     <hr>
+
+    <p>Go to <a href="/contact">contact page</a></p>
+    <p>or <a href="/hello">hello page</a></p>
+    <p>or to <a href="/goodbye">goodbye page</a></p>
+
     <button onclick="getTime()">
         Click me to display Date and Time.</button>
 
     <p id="demo"></p>
-    <p>Go to contact <a href="/contact">page</a></p>
-    <p>or <a href="/hello">hello page</a></p>
-    <p>or to <a href="/goodbye">goodbye page</a></p>
-    <script src="/static/js.js"></script>
-</body>
-</html>
+{% endblock %}
