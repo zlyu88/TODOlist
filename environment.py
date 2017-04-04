@@ -1,4 +1,5 @@
 import os
+import re
 from os import environ
 
 from jinja2 import Environment, FileSystemLoader
@@ -17,7 +18,12 @@ class Template:
         template_loader = FileSystemLoader(searchpath=os.path.dirname(__file__))
         jinja_env = Environment(loader=template_loader)
         template = jinja_env.get_template(self.file)
-        return template.render(self.content)
+        body = template.render(self.content)
+        css = ''.join(('<style>\n', open('static/style.css', 'r').read(), '</style>'))
+        body = re.sub("(<link[^>]+>)", css, body)
+        js = ''.join(('<script>\n', open('static/js.js', 'r').read(), '</script>'))
+        body = re.sub("(<script[^>]+>)", js, body)
+        return body
 
 
 class Response(object):
