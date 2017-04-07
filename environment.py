@@ -1,7 +1,6 @@
 import os
 import re
 
-from jinja2 import DictLoader
 from jinja2 import Environment, FileSystemLoader
 from paste.session import SessionMiddleware
 from wsgiref.simple_server import make_server
@@ -10,20 +9,16 @@ import views
 
 
 class Template:
-    def __init__(self, page, content=None):
+    def __init__(self, page, content={}):
         self.page = page
         self.content = content
 
     def get_message(self):
-        template_loader = FileSystemLoader(searchpath=os.path.dirname(__file__))
-        env = Environment(loader=template_loader)
-        pages = ('templates/base.html', self.page)
-        templates = dict((name, open(name, 'r').read()) for name in pages)
-        env.loader = DictLoader(templates)
-        body = env.get_template(self.page)
-        result = body.render(self.content)
+        env = Environment(loader=FileSystemLoader('templates'))
+        template = env.get_template(self.page)
+        result = template.render(self.content)
         css = ''.join(('<style>\n', open('static/style.css', 'r').read(), '</style>'))
-        result = re.sub("(<link[^>]+>)", css, result)
+        result = re.subn("(<link[^>]+>)", css, result, 1)[0]
         js = ''.join(('<script>\n', open('static/js.js', 'r').read(), '</script>'))
         result = re.sub("(<script[^>]+>)", js, result)
         return result
@@ -49,10 +44,27 @@ class App:
             '/': views.counter,
             '/hello': views.hello,
             '/goodbye': views.goodbye,
-            '/contact': views.contact
+            '/contact': views.contact,
+            '/list': views.list,
+            '/add_list': views.add_list,
         }
+        path = self.environ['PATH_INFO']
+        input_length = self.environ.get('CONTENT_LENGTH')
+        if not input_length == '':
+            input_data = self.environ['wsgi.input'].read(int(input_length))
+            self.session['input_data'] = input_data.decode('utf-8').split('\r\n')[3]
 
-        response = self.views_mapping.get(self.environ['PATH_INFO'], views.errors)(self.session)
+        if path.startswith('/list/'):
+            list_id = path.split('/')[-1]
+            response = views.detail(self.session, list_id)
+        elif path.startswith('/edit/list/'):
+            list_id = path.split('/')[-1]
+            response = views.edit_list(self.session, list_id)
+        elif path.startswith('/delete/list/'):
+            list_id = path.split('/')[-1]
+            response = views.delete_list(self.session, list_id)
+        else:
+            response = self.views_mapping.get(path, views.errors)(self.session)
         yield self.get_response(response)
 
     def get_response(self, response):

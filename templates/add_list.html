@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}contact{% endblock %}
+
+{% block main_content %}
+
+<form method='post' action='/add_list' enctype="multipart/form-data">
+
+    Add new list:<br>
+    <input type="text" id="title" name="title" value=""/>
+    <button type="submit" >Submit</button>
+    <input type="button" onclick="history.back();" value="Cancel">
+
+</form>
+
+{% endblock %}
