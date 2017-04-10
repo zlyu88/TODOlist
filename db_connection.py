@@ -4,11 +4,12 @@ import pymysql
 def connect(sql, *args):
     conn = pymysql.connect(user='user', passwd='1234',
                            db='todolist', charset="utf8", autocommit=True)
-    cursor = conn.cursor()
-    cursor.execute(sql, args)
-    result = cursor.fetchall()
-    cursor.close()
-    conn.close()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute(sql, args)
+            result = cursor.fetchall()
+    finally:
+        conn.close()
     return result
 
 
