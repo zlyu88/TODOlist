@@ -1,20 +1,20 @@
 import pymysql
 
 
-def connect(sql):
-    conn = pymysql.connect(user='user', passwd='1234', db='todolist', charset="utf8")
+def connect(sql, *args):
+    conn = pymysql.connect(user='user', passwd='1234',
+                           db='todolist', charset="utf8", autocommit=True)
     cursor = conn.cursor()
-    cursor.execute(sql)
+    cursor.execute(sql, args)
     result = cursor.fetchall()
-    conn.commit()
     cursor.close()
     conn.close()
     return result
 
 
 def create_list(list_name, user_id):
-    sql = "insert into list (list_name, user_id) values ('{name}', '{id}')".format(name=list_name, id=user_id)
-    connect(sql)
+    sql = "insert into list (list_name, user_id) values (%s, %s)"
+    connect(sql, list_name, user_id)
 
 
 def get_lists():
@@ -23,15 +23,15 @@ def get_lists():
 
 
 def get_list_detail(list_id):
-    sql = "select * from list where id={id}".format(id=list_id)
-    return connect(sql)
+    sql = "select * from list where id=%s"
+    return connect(sql, list_id)
 
 
 def edit_list_name(list_id, new_name):
-    sql = "update list set list_name='{name}' where id={id}".format(name=new_name, id=list_id)
-    connect(sql)
+    sql = "update list set list_name=%s where id=%s"
+    connect(sql, new_name, list_id)
 
 
 def destroy_list(list_id):
-    sql = "delete from list where id={id}".format(id=list_id)
-    connect(sql)
+    sql = "delete from list where id=%s"
+    connect(sql, list_id)
