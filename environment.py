@@ -1,5 +1,5 @@
+import fnmatch
 import os
-import re
 
 from jinja2 import Environment, FileSystemLoader
 from paste.session import SessionMiddleware
@@ -17,10 +17,6 @@ class Template:
         env = Environment(loader=FileSystemLoader('templates'))
         template = env.get_template(self.page)
         result = template.render(self.content)
-        css = ''.join(('<style>\n', open('static/style.css', 'r').read(), '</style>'))
-        result = re.subn("(<link[^>]+>)", css, result, 1)[0]
-        js = ''.join(('<script>\n', open('static/js.js', 'r').read(), '</script>'))
-        result = re.sub("(<script[^>]+>)", js, result)
         return result
 
 
@@ -39,33 +35,35 @@ class App:
         self.start = start_response
 
     def __iter__(self):
-
-        self.views_mapping = {
-            '/': views.counter,
-            '/hello': views.hello,
-            '/goodbye': views.goodbye,
-            '/contact': views.contact,
-            '/list': views.list,
-            '/add_list': views.add_list,
-        }
+        # Get form input data
         path = self.environ['PATH_INFO']
         input_length = self.environ.get('CONTENT_LENGTH')
         if not input_length == '':
             input_data = self.environ['wsgi.input'].read(int(input_length))
             self.session['input_data'] = input_data.decode('utf-8').split('\r\n')[3]
 
-        if path.startswith('/list/'):
-            list_id = path.split('/')[-1]
-            response = views.detail(self.session, list_id)
-        elif path.startswith('/edit/list/'):
-            list_id = path.split('/')[-1]
-            response = views.edit_list(self.session, list_id)
-        elif path.startswith('/delete/list/'):
-            list_id = path.split('/')[-1]
-            response = views.delete_list(self.session, list_id)
-        else:
-            response = self.views_mapping.get(path, views.errors)(self.session)
-        yield self.get_response(response)
+        # Create urls routes
+        self.views_mapping = [('/static/*', views.make_static_application, '/static/', 'static', self.environ),
+                              ('/', views.counter, self.session),
+                              ('/hello', views.hello),
+                              ('/goodbye', views.goodbye),
+                              ('/contact', views.contact),
+                              ('/list', views.list),
+                              ('/add_list', views.add_list, self.session),
+                              ('/list/*', views.detail, path.split('/')[-1]),
+                              ('/edit/list/*', views.edit_list, self.session, path.split('/')[-1]),
+                              ('/delete/list/*', views.delete_list, path.split('/')[-1])
+                              ]
+
+        # Check urls
+        def url_checker():
+            for path, app, *args in self.views_mapping:
+                if fnmatch.fnmatch(self.environ['PATH_INFO'], path):
+                    response = app(*args)
+                    return self.get_response(response)
+            response = views.errors()
+            return self.get_response(response)
+        yield url_checker()
 
     def get_response(self, response):
         self.start(response.status_code, response.headers)

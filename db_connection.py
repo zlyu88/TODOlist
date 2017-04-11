@@ -4,6 +4,7 @@ import pymysql
 def connect(sql, *args):
     conn = pymysql.connect(user='user', passwd='1234',
                            db='todolist', charset="utf8", autocommit=True)
+    result = None
     try:
         with conn.cursor() as cursor:
             cursor.execute(sql, args)
