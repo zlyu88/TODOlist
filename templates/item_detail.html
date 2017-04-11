@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}{{ data[1] }}{% endblock %}
+
+{% block main_content %}
+
+<p>id: {{ data[0] }}</p>
+<p>title: {{ data[1] }}</p>
+<p>list id: {{ data[3] }}</p>
+
+<h1>{{ data[1] }}</h1>
+
+{% if data[2] == 0 %}
+    status: <font color="red">has to be done</font> <br>
+    <a href="/check-box/done/{{ data[0] }}">sign as done</a>
+{% elif data[2] == 1 %}
+    status: <font color="green">DONE</font> <br>
+    <a href="/check-box/undone/{{ data[0] }}">sign as undone</a>
+{% endif %}
+
+<p><a href="/item/edit/{{ data[0] }}">edit</a> |
+    <a href="/item/delete/{{ data[0] }}/{{ data[0] }}">delete</a></p>
+
+<p><a href="/list/detail/{{ data[3] }}">Back</a></p>
+{% endblock %}

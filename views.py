@@ -1,7 +1,8 @@
 import os
 from mimetypes import guess_type
 
-from db_connection import get_lists, get_list_detail, create_list, destroy_list, edit_list_name
+from db_connection import get_lists, get_list_detail, create_list, destroy_list, edit_list_name, item_check_box_undone
+from db_connection import create_item, get_item_detail, edit_item_name, destroy_item, item_check_box_done
 from environment import Response
 from environment import Template
 
@@ -44,8 +45,9 @@ def list():
 
 
 def detail(list_id):
-    data = get_list_detail(list_id)
-    template = Template('detail.html', {'data': data[0]})
+    list_data, items_data = get_list_detail(list_id)
+    template = Template('detail.html', {'list_data': list_data[0],
+                                        'items_data': items_data})
     message = template.get_message()
     return Response(message)
 
@@ -69,7 +71,7 @@ def edit_list(session, list_id):
         del session['input_data']
         return detail(list_id)
     except KeyError:
-        data = get_list_detail(list_id)
+        data, _ = get_list_detail(list_id)
         template = Template('edit_list.html', {'data': data[0]})
         message = template.get_message()
         return Response(message)
@@ -92,3 +94,50 @@ def make_static_application(basepath, staticdir, environ):
             content_type = guess_type(path.split('/')[-1])[0]
             headers = [('Content-Type', content_type)]
             return Response(content, status_code='200 OK', headers=headers)
+
+
+def add_item(session, list_id):
+    try:
+        session['input_data']
+        create_item(session['input_data'], list_id)
+        del session['input_data']
+        return detail(list_id)
+    except KeyError:
+        template = Template('add_item.html', {'list_id': list_id})
+        message = template.get_message()
+        return Response(message)
+
+
+def item_detail(item_id):
+    data = get_item_detail(item_id)
+    template = Template('item_detail.html', {'data': data[0]})
+    message = template.get_message()
+    return Response(message)
+
+
+def edit_item(session, item_id):
+    try:
+        session['input_data']
+        edit_item_name(item_id, session['input_data'])
+        del session['input_data']
+        return item_detail(item_id)
+    except KeyError:
+        data = get_item_detail(item_id)
+        template = Template('edit_item.html', {'data': data[0]})
+        message = template.get_message()
+        return Response(message)
+
+
+def delete_item(item_id, list_id):
+    destroy_item(item_id)
+    return detail(list_id)
+
+
+def check_box_done(item_id):
+    item_check_box_done(item_id)
+    return item_detail(item_id)
+
+
+def check_box_undone(item_id):
+    item_check_box_undone(item_id)
+    return item_detail(item_id)
