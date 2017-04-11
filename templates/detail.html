@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}{{ data[1] }}{% endblock %}
+
+{% block main_content %}
+    <h1>{{ data[1] }}</h1>
+
+<p>id: {{ data[0] }}</p>
+<p>title: {{ data[1] }}</p>
+<p>author id: {{ data[2] }}</p>
+
+<p><a href="/edit/list/{{ data[0] }}">edit</a> |
+    <a href="/delete/list/{{ data[0] }}">delete</a></p>
+
+<p><a href="/list">Back</a></p>
+{% endblock %}

@@ -1,12 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}contact{% endblock %}
+
+{% block main_content %}
     <h1>CONTACT ~~~ {{name}}</h1>
     <hr>
+
     <p>Go to <a href="/">counter</a></p>
-</body>
-</html>
+
+    <button onclick="getTime()">
+        Click me to display Date and Time.</button>
+
+    <p id="demo"></p>
+{% endblock %}

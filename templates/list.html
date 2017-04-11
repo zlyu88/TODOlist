@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}list of todolists{% endblock %}
+
+{% block main_content %}
+    <h1>ToDo lists:</h1>
+    <hr>
+    {% for list in lists %}
+    <h1><a href="/list/{{ list[0] }}">{{ list[1] }}</a></h1>
+    {% endfor %}
+    <h1><a href="/add_list"><i>*** add new list ***</i></a></h1>
+    <p>Go to <a href="/">counter</a></p>
+
+    <button onclick="getTime()">
+        Click me to display Date and Time.</button>
+
+    <p id="demo"></p>
+{% endblock %}

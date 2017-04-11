@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}contact{% endblock %}
+
+{% block main_content %}
+
+<form method='post' action='/edit/list/{{ data[0] }}' enctype="multipart/form-data">
+
+    Edit current list: {{ data[1] }}<br>
+    <input type="text" id="title" name="title" value="{{ data[1] }}"/>
+    <button type="submit" >Submit</button>
+    <input type="button" onclick="history.back();" value="Cancel">
+
+</form>
+
+{% endblock %}
