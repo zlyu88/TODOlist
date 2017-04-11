@@ -1,4 +1,5 @@
 import os
+from mimetypes import guess_type
 
 from db_connection import get_lists, get_list_detail, create_list, destroy_list, edit_list_name
 from environment import Response
@@ -88,18 +89,6 @@ def make_static_application(basepath, staticdir, environ):
             h = open(path, 'r')
             content = h.read()
             h.close()
-            headers = [('Content-Type', content_type(path))]
+            content_type = guess_type(path.split('/')[-1])[0]
+            headers = [('Content-Type', content_type)]
             return Response(content, status_code='200 OK', headers=headers)
-
-
-def content_type(path):
-    if path.endswith(".css"):
-        return "text/css"
-    elif path.endswith(".html"):
-        return "text/html"
-    elif path.endswith(".jpg"):
-        return "image/jpeg"
-    elif path.endswith(".js"):
-        return "text/javascript"
-    else:
-        return "application/octet-stream"

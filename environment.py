@@ -57,9 +57,9 @@ class App:
 
         # Check urls
         def url_checker():
-            for path, app, *args in self.views_mapping:
+            for path, view, *args in self.views_mapping:
                 if fnmatch.fnmatch(self.environ['PATH_INFO'], path):
-                    response = app(*args)
+                    response = view(*args)
                     return self.get_response(response)
             response = views.errors()
             return self.get_response(response)
