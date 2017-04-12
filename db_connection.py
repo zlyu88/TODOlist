@@ -25,11 +25,12 @@ def get_lists():
 
 
 def get_list_detail(list_id):
+    result = {}
     list_sql = "select * from list where id=%s"
-    list_data = execute(list_sql, list_id)
+    result['list_data'] = execute(list_sql, list_id)[0]
     items_sql = "select * from item where list_id=%s"
-    items_data = execute(items_sql, list_id)
-    return list_data, items_data
+    result['items_data'] = execute(items_sql, list_id)
+    return result
 
 
 def edit_list_name(list_id, new_name):
@@ -48,11 +49,12 @@ def create_item(item_name, list_id):
 
 
 def get_item_detail(item_id):
+    result = {}
     item_sql = "select * from item where id=%s"
-    item_data = execute(item_sql, item_id)
+    result['item_data'] = execute(item_sql, item_id)[0]
     subtask_sql = "select * from subtask where item_id=%s"
-    subtask_data = execute(subtask_sql, item_id)
-    return item_data, subtask_data
+    result['subtask_data'] = execute(subtask_sql, item_id)
+    return result
 
 
 def edit_item_name(item_id, new_name):

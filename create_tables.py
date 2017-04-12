@@ -1,13 +1,13 @@
 import pymysql
 
 
-user = "CREATE TABLE user ( " \
+user = "CREATE TABLE IF NOT EXISTS user ( " \
     "id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, " \
     "name VARCHAR(100) NOT NULL, " \
     "email VARCHAR(100) NOT NULL) " \
     "ENGINE = InnoDB "
 
-list = "CREATE TABLE list ( " \
+list = "CREATE TABLE IF NOT EXISTS list ( " \
     "id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, " \
     "list_name VARCHAR(100) NOT NULL, " \
     "user_id SMALLINT UNSIGNED NOT NULL, " \
@@ -15,7 +15,7 @@ list = "CREATE TABLE list ( " \
     "REFERENCES user (id) " \
     "ON DELETE CASCADE) ENGINE = InnoDB;"
 
-item = "CREATE TABLE item ( " \
+item = "CREATE TABLE IF NOT EXISTS item ( " \
     "id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, " \
     "item_name VARCHAR(100) NOT NULL, " \
     "done TINYINT(1) DEFAULT 0, " \
@@ -24,7 +24,7 @@ item = "CREATE TABLE item ( " \
     "REFERENCES list (id) " \
     "ON DELETE CASCADE) ENGINE = InnoDB;"
 
-subtask = "CREATE TABLE subtask ( " \
+subtask = "CREATE TABLE IF NOT EXISTS subtask ( " \
     "id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, " \
     "subtask_name VARCHAR(100) NOT NULL, " \
     "item_id MEDIUMINT UNSIGNED NOT NULL, " \
@@ -45,4 +45,4 @@ def execute(sql):
     finally:
         conn.close()
 
-# execute(queries)
+execute(queries)

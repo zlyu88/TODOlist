@@ -46,9 +46,9 @@ def list():
 
 
 def detail(list_id):
-    list_data, items_data = get_list_detail(list_id)
-    template = Template('detail.html', {'list_data': list_data[0],
-                                        'items_data': items_data})
+    data = get_list_detail(list_id)
+    template = Template('detail.html', {'list_data': data['list_data'],
+                                        'items_data': data['items_data']})
     message = template.get_message()
     return Response(message)
 
@@ -72,8 +72,8 @@ def edit_list(session, list_id):
         del session['input_data']
         return detail(list_id)
     except KeyError:
-        data, _ = get_list_detail(list_id)
-        template = Template('edit_list.html', {'data': data[0]})
+        data = get_list_detail(list_id)
+        template = Template('edit_list.html', {'data': data['list_data']})
         message = template.get_message()
         return Response(message)
 
@@ -110,9 +110,9 @@ def add_item(session, list_id):
 
 
 def item_detail(item_id):
-    item_data, subtask_data = get_item_detail(item_id)
-    template = Template('item_detail.html', {'item_data': item_data[0],
-                                             'subtask_data': subtask_data})
+    data = get_item_detail(item_id)
+    template = Template('item_detail.html', {'item_data': data['item_data'],
+                                             'subtask_data': data['subtask_data']})
     message = template.get_message()
     return Response(message)
 
@@ -125,7 +125,7 @@ def edit_item(session, item_id):
         return item_detail(item_id)
     except KeyError:
         data = get_item_detail(item_id)
-        template = Template('edit_item.html', {'data': data[0]})
+        template = Template('edit_item.html', {'data': data['item_data']})
         message = template.get_message()
         return Response(message)
 
