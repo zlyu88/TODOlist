@@ -1,25 +1,31 @@
 {% extends "base.html" %}
 
-{% block title %}{{ data[1] }}{% endblock %}
+{% block title %}{{ item_data[1] }}{% endblock %}
 
 {% block main_content %}
 
-<p>id: {{ data[0] }}</p>
-<p>title: {{ data[1] }}</p>
-<p>list id: {{ data[3] }}</p>
+<p>id: {{ item_data[0] }}</p>
+<p>title: {{ item_data[1] }}</p>
+<p>list id: {{ item_data[3] }}</p>
 
-<h1>{{ data[1] }}</h1>
+<h1>{{ item_data[1] }}</h1>
 
-{% if data[2] == 0 %}
+{% for subtask in subtask_data %}
+<h1>subtask: {{ subtask[1] }} |
+    <font size="4"><a href="/subtask/delete/{{ subtask[2] }}/{{ subtask[0] }}">delete</a></font></h1>
+{% endfor %}
+<h1><a href="/item/{{ item_data[0] }}/add_subtask"><i>*** add another one subtask ***</i></a></h1>
+
+{% if item_data[2] == 0 %}
     status: <font color="red">has to be done</font> <br>
-    <a href="/check-box/{{ data[0] }}/1">sign as done</a>
-{% elif data[2] == 1 %}
+    <a href="/check-box/{{ item_data[0] }}/1">sign as done</a>
+{% elif item_data[2] == 1 %}
     status: <font color="green">DONE</font> <br>
-    <a href="/check-box/{{ data[0] }}/0">sign as undone</a>
+    <a href="/check-box/{{ item_data[0] }}/0">sign as undone</a>
 {% endif %}
 
-<p><a href="/item/edit/{{ data[0] }}">edit</a> |
-    <a href="/item/delete/{{ data[0] }}/{{ data[0] }}">delete</a></p>
+<p><a href="/item/edit/{{ item_data[0] }}">edit</a> |
+    <a href="/item/delete/{{ item_data[3] }}/{{ item_data[0] }}">delete</a></p>
 
-<p><a href="/list/detail/{{ data[3] }}">Back</a></p>
+<p><a href="/list/detail/{{ item_data[3] }}">Back</a></p>
 {% endblock %}

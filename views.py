@@ -3,6 +3,7 @@ from mimetypes import guess_type
 
 from db_connection import get_lists, get_list_detail, create_list, destroy_list, edit_list_name
 from db_connection import create_item, get_item_detail, edit_item_name, destroy_item, item_check_box
+from db_connection import create_subtask, destroy_subtask
 from environment import Response
 from environment import Template
 
@@ -109,8 +110,9 @@ def add_item(session, list_id):
 
 
 def item_detail(item_id):
-    data = get_item_detail(item_id)
-    template = Template('item_detail.html', {'data': data[0]})
+    item_data, subtask_data = get_item_detail(item_id)
+    template = Template('item_detail.html', {'item_data': item_data[0],
+                                             'subtask_data': subtask_data})
     message = template.get_message()
     return Response(message)
 
@@ -135,4 +137,21 @@ def delete_item(item_id, list_id):
 
 def check_box(item_id, value):
     item_check_box(item_id, value)
+    return item_detail(item_id)
+
+
+def add_subtask(session, item_id):
+    try:
+        session['input_data']
+        create_subtask(session['input_data'], item_id)
+        del session['input_data']
+        return item_detail(item_id)
+    except KeyError:
+        template = Template('add_subtask.html', {'item_id': item_id})
+        message = template.get_message()
+        return Response(message)
+
+
+def delete_subtask(subtask_id, item_id):
+    destroy_subtask(subtask_id)
     return item_detail(item_id)

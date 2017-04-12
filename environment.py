@@ -58,6 +58,8 @@ class App:
                               ('/item/edit/*', views.edit_item, self.session, path.split('/')[-1]),
                               ('/item/delete/*', views.delete_item, path.split('/')[-1], path.split('/')[-2]),
                               ('/check-box/*', views.check_box, path.split('/')[-2], path.split('/')[-1]),
+                              ('/item/*/add_subtask', views.add_subtask, self.session, path.split('/')[-2]),
+                              ('/subtask/delete/*', views.delete_subtask, path.split('/')[-1], path.split('/')[-2]),
                               ]
 
         # Check urls
