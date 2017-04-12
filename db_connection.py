@@ -62,11 +62,6 @@ def destroy_item(item_id):
     connect(sql, item_id)
 
 
-def item_check_box_done(item_id):
-    sql = "update item set done=1 where id=%s"
-    connect(sql, item_id)
-
-
-def item_check_box_undone(item_id):
-    sql = "update item set done=0 where id=%s"
-    connect(sql, item_id)
+def item_check_box(item_id, value):
+    sql = "update item set done=%s where id=%s"
+    connect(sql, value, item_id)

@@ -1,8 +1,8 @@
 import os
 from mimetypes import guess_type
 
-from db_connection import get_lists, get_list_detail, create_list, destroy_list, edit_list_name, item_check_box_undone
-from db_connection import create_item, get_item_detail, edit_item_name, destroy_item, item_check_box_done
+from db_connection import get_lists, get_list_detail, create_list, destroy_list, edit_list_name
+from db_connection import create_item, get_item_detail, edit_item_name, destroy_item, item_check_box
 from environment import Response
 from environment import Template
 
@@ -133,11 +133,6 @@ def delete_item(item_id, list_id):
     return detail(list_id)
 
 
-def check_box_done(item_id):
-    item_check_box_done(item_id)
-    return item_detail(item_id)
-
-
-def check_box_undone(item_id):
-    item_check_box_undone(item_id)
+def check_box(item_id, value):
+    item_check_box(item_id, value)
     return item_detail(item_id)

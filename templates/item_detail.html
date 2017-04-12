@@ -12,10 +12,10 @@
 
 {% if data[2] == 0 %}
     status: <font color="red">has to be done</font> <br>
-    <a href="/check-box/done/{{ data[0] }}">sign as done</a>
+    <a href="/check-box/{{ data[0] }}/1">sign as done</a>
 {% elif data[2] == 1 %}
     status: <font color="green">DONE</font> <br>
-    <a href="/check-box/undone/{{ data[0] }}">sign as undone</a>
+    <a href="/check-box/{{ data[0] }}/0">sign as undone</a>
 {% endif %}
 
 <p><a href="/item/edit/{{ data[0] }}">edit</a> |

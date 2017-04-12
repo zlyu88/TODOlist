@@ -57,8 +57,7 @@ class App:
                               ('/item/detail/*', views.item_detail, path.split('/')[-1]),
                               ('/item/edit/*', views.edit_item, self.session, path.split('/')[-1]),
                               ('/item/delete/*', views.delete_item, path.split('/')[-1], path.split('/')[-2]),
-                              ('/check-box/done/*', views.check_box_done, path.split('/')[-1]),
-                              ('/check-box/undone/*', views.check_box_undone, path.split('/')[-1]),
+                              ('/check-box/*', views.check_box, path.split('/')[-2], path.split('/')[-1]),
                               ]
 
         # Check urls
