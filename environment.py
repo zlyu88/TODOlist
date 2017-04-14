@@ -40,7 +40,11 @@ class App:
         input_length = self.environ.get('CONTENT_LENGTH')
         if not input_length == '':
             input_data = self.environ['wsgi.input'].read(int(input_length))
-            self.session['input_data'] = input_data.decode('utf-8').split('\r\n')[3]
+            input_data = input_data.decode('utf-8').split('\r\n')[3]
+        else:
+            input_data = None
+
+        request_method = self.environ.get('REQUEST_METHOD')
 
         # Create urls routes
         self.views_mapping = [('/static/*', views.make_static_application, '/static/', 'static', self.environ),
@@ -49,16 +53,16 @@ class App:
                               ('/goodbye', views.goodbye),
                               ('/contact', views.contact),
                               ('/list', views.list),
-                              ('/add_list', views.add_list, self.session),
+                              ('/add_list', views.add_list, request_method, input_data),
                               ('/list/detail/*', views.detail, path.split('/')[-1]),
-                              ('/list/edit/*', views.edit_list, self.session, path.split('/')[-1]),
+                              ('/list/edit/*', views.edit_list, path.split('/')[-1], request_method, input_data),
                               ('/list/delete/*', views.delete_list, path.split('/')[-1]),
-                              ('/list/*/add_item', views.add_item, self.session, path.split('/')[-2]),
+                              ('/list/*/add_item', views.add_item, path.split('/')[-2], request_method, input_data),
                               ('/item/detail/*', views.item_detail, path.split('/')[-1]),
-                              ('/item/edit/*', views.edit_item, self.session, path.split('/')[-1]),
+                              ('/item/edit/*', views.edit_item, path.split('/')[-1], request_method, input_data),
                               ('/item/delete/*', views.delete_item, path.split('/')[-1], path.split('/')[-2]),
                               ('/check-box/*', views.check_box, path.split('/')[-2], path.split('/')[-1]),
-                              ('/item/*/add_subtask', views.add_subtask, self.session, path.split('/')[-2]),
+                              ('/item/*/add_subtask', views.add_subtask, path.split('/')[-2], request_method, input_data),
                               ('/subtask/delete/*', views.delete_subtask, path.split('/')[-1], path.split('/')[-2]),
                               ]
 

@@ -53,25 +53,21 @@ def detail(list_id):
     return Response(message)
 
 
-def add_list(session):
-    try:
-        session['input_data']
-        create_list(session['input_data'], 1)  # Temporary user_id set to 1
-        del session['input_data']
+def add_list(request_method, new_member):
+    if request_method == 'POST':
+        create_list(new_member, 1)  # Temporary user_id set to 1
         return list()
-    except KeyError:
+    elif request_method == 'GET':
         template = Template('add_list.html')
         message = template.get_message()
         return Response(message)
 
 
-def edit_list(session, list_id):
-    try:
-        session['input_data']
-        edit_list_name(list_id, session['input_data'])
-        del session['input_data']
+def edit_list(list_id, request_method, new_name):
+    if request_method == 'POST':
+        edit_list_name(list_id, new_name)
         return detail(list_id)
-    except KeyError:
+    elif request_method == 'GET':
         data = get_list_detail(list_id)
         template = Template('edit_list.html', {'data': data['list_data']})
         message = template.get_message()
@@ -97,18 +93,6 @@ def make_static_application(basepath, staticdir, environ):
             return Response(content, status_code='200 OK', headers=headers)
 
 
-def add_item(session, list_id):
-    try:
-        session['input_data']
-        create_item(session['input_data'], list_id)
-        del session['input_data']
-        return detail(list_id)
-    except KeyError:
-        template = Template('add_item.html', {'list_id': list_id})
-        message = template.get_message()
-        return Response(message)
-
-
 def item_detail(item_id):
     data = get_item_detail(item_id)
     template = Template('item_detail.html', {'item_data': data['item_data'],
@@ -117,13 +101,21 @@ def item_detail(item_id):
     return Response(message)
 
 
-def edit_item(session, item_id):
-    try:
-        session['input_data']
-        edit_item_name(item_id, session['input_data'])
-        del session['input_data']
+def add_item(list_id, request_method, new_member):
+    if request_method == 'POST':
+        create_item(new_member, list_id)
+        return detail(list_id)
+    elif request_method == 'GET':
+        template = Template('add_item.html', {'list_id': list_id})
+        message = template.get_message()
+        return Response(message)
+
+
+def edit_item(item_id, request_method, new_name):
+    if request_method == 'POST':
+        edit_item_name(item_id, new_name)
         return item_detail(item_id)
-    except KeyError:
+    elif request_method == 'GET':
         data = get_item_detail(item_id)
         template = Template('edit_item.html', {'data': data['item_data']})
         message = template.get_message()
@@ -140,13 +132,11 @@ def check_box(item_id, value):
     return item_detail(item_id)
 
 
-def add_subtask(session, item_id):
-    try:
-        session['input_data']
-        create_subtask(session['input_data'], item_id)
-        del session['input_data']
+def add_subtask(item_id, request_method, new_member):
+    if request_method == 'POST':
+        create_subtask(new_member, item_id)
         return item_detail(item_id)
-    except KeyError:
+    elif request_method == 'GET':
         template = Template('add_subtask.html', {'item_id': item_id})
         message = template.get_message()
         return Response(message)
