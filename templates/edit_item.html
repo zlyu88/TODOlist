@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}edit list{% endblock %}
+{% block title %}edit item{% endblock %}
 
 {% block main_content %}
 
-<form method='post' action='/list/edit/{{ data[0] }}' enctype="multipart/form-data">
+<form method='post' action='/item/edit/{{ data[0] }}' enctype="multipart/form-data">
 
-    Edit current list: {{ data[1] }}<br>
+    Edit current item: {{ data[1] }}<br>
     <input type="text" id="title" name="title" value="{{ data[1] }}"/>
     <button type="submit" >Submit</button>
     <input type="button" onclick="history.back();" value="Cancel">

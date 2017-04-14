@@ -1,16 +1,28 @@
 {% extends "base.html" %}
 
-{% block title %}{{ data[1] }}{% endblock %}
+{% block title %}{{ list_data[1] }}{% endblock %}
 
 {% block main_content %}
-    <h1>{{ data[1] }}</h1>
 
-<p>id: {{ data[0] }}</p>
-<p>title: {{ data[1] }}</p>
-<p>author id: {{ data[2] }}</p>
+<p>id: {{ list_data[0] }}</p>
+<p>title: {{ list_data[1] }}</p>
+<p>author id: {{ list_data[2] }}</p>
 
-<p><a href="/edit/list/{{ data[0] }}">edit</a> |
-    <a href="/delete/list/{{ data[0] }}">delete</a></p>
+<h1>{{ list_data[1] }}</h1>
+{% for item in items_data %}
+    <h1><a href="/item/detail/{{ item[0] }}">item: {{ item[1] }}</a>
+    {% if item[2] == 0 %}
+        <font color="red"><i>undone</i></font>
+    {% elif item[2] == 1 %}
+        <font color="#228b22"><i>done</i></font>
+    {% endif %}
+    </h1>
+{% endfor %}
+<h1><a href="/list/{{ list_data[0] }}/add_item"><i>*** add another one item ***</i></a></h1>
+
+
+<p><a href="/list/edit/{{ list_data[0] }}">edit</a> |
+    <a href="/list/delete/{{ list_data[0] }}">delete</a></p>
 
 <p><a href="/list">Back</a></p>
 {% endblock %}

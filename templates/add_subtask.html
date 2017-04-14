@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}new list{% endblock %}
+{% block title %}new subtask{% endblock %}
 
 {% block main_content %}
 
-<form method='post' action='/add_list' enctype="multipart/form-data">
+<form method='post' action='/item/{{ item_id }}/add_subtask' enctype="multipart/form-data">
 
-    Add new list:<br>
+    Add new subtask:<br>
     <input type="text" id="title" name="title" value=""/><br>
     <button type="submit" >Submit</button>
     <input type="button" onclick="history.back();" value="Cancel">
